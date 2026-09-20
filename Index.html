@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Serverless Real-time</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- BAGIAN LOGIN (Tampil di awal) -->
+    <div id="loginSection" style="text-align: center; margin-top: 50px;">
+        <h2>Selamat Datang!</h2>
+        <p>Silakan login untuk mengakses sistem.</p>
+        <br>
+        <button id="loginBtn" style="background-color: #db4437; max-width: 250px;">Login dengan Google</button>
+    </div>
+
+    <!-- BAGIAN UTAMA (Disembunyikan di awal) -->
+    <div id="mainContent" style="display: none; width: 100%; max-width: 450px;">
+        
+        <!-- Info User & Tombol Logout -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <p id="userInfo" style="font-weight: bold;"></p>
+            <button id="logoutBtn" style="background-color: #555; padding: 8px 12px; width: auto;">Logout</button>
+        </div>
+
+        <h2>Upload Data Real-time</h2>
+        
+        <!-- === BAGIAN FORM YANG HILANG (PASTIKAN ADA DI SINI) === -->
+        <form id="uploadForm">
+            <label>Masukkan Teks/Nama:</label>
+            <input type="text" id="teksData" required>
+
+            <label>Pilih Gambar / Video:</label>
+            <input type="file" id="fileUpload" accept="image/*,video/*" required>
+
+            <button type="submit" id="submitBtn">Kirim Data</button>
+            <div id="status"></div>
+        </form>
+        <!-- ======================================================== -->
+
+        <h2>Daftar Data:</h2>
+        <div id="dataList">Memuat data...</div>
+        
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+/* --- RESET & FONT DASAR --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    color: #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- KEPALA HALAMAN (HEADER) --- */
+h2 {
+    color: #1a73e8;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* --- DESAIN FORMULIR --- */
+form {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 30px;
+    transition: transform 0.2s ease;
+}
+
+form:hover {
+    transform: translateY(-2px);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* --- INPUT TEXT & FILE --- */
+input[type="text"], 
+input[type="file"] {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+    outline: none;
+}
+
+/* Khusus untuk input file agar lebih rapi */
+input[type="file"] {
+    padding: 9px;
+    background-color: #fafafa;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: background-color 0.2s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #d2e3fc;
+}
+
+/* --- TOMBOL KIRIM --- */
+button {
+    width: 100%;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #1557b0;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    background-color: #a0c2f5;
+    cursor: not-allowed;
+}
+
+/* --- TEKS STATUS --- */
+#status {
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.95rem;
+    min-height: 20px;
+}
+
+/* --- WADAH DAFTAR DATA --- */
+#dataList {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- DESAIN CARD (Kartu Data) --- */
+.card {
+    background: #ffffff;
+    border-left: 5px solid #1a73e8;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card .teks-utama {
+    font-size: 1.1rem;
+    color: #222;
+}
+
+.card .waktu {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+/* --- TAUTAN DI DALAM CARD --- */
+.card a {
+    display: inline-block;
+    margin-top: 5px;
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.card a:hover {
+    text-decoration: underline;
+    color: #1557b0;
+}
+
+/* --- ANIMASI LOADING --- */
+.loading-text {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
