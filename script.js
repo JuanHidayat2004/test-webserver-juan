@@ -117,48 +117,112 @@ form.addEventListener('submit', async (e) => {
     }
 
     btn.disabled = true;
-    statusText.innerText = 'Memproses...';
+    statusText.innerText = 'Mempersiapkan data...';
+
+    // Ambil referensi elemen progress bar
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const speedText = document.getElementById('speedText');
 
     const reader = new FileReader();
     reader.readAsDataURL(fileInput);
 
-    reader.onload = async function () {
+    reader.onload = function () {
         const payload = {
             teks: teks,
             file: reader.result,
             filename: fileInput.name,
-            
-            // MENGIRIMKAN EMAIL USER KE APPS SCRIPT
             emailPengirim: currentUserEmail 
         };
 
-        statusText.innerText = 'Mengirim ke server...';
+        const payloadString = JSON.stringify(payload);
+        
+        // Tampilkan progress bar dan reset nilainya
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.innerText = '0%';
+        speedText.innerText = 'Menghitung...';
+        statusText.innerText = 'Mengunggah ke server...';
 
-        try {
-            const response = await fetch(gasURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload),
-                redirect: 'follow'
-            });
+        // Variabel untuk menghitung kecepatan
+        let previousLoaded = 0;
+        let previousTime = Date.now();
 
-            const result = await response.json();
+        // Menggunakan XMLHttpRequest agar bisa melacak progress
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', gasURL, true);
+        xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
 
-            if (result.status === 'success') {
-                statusText.innerText = '✅ Berhasil!';
-                form.reset();
-                set(dbRef, Date.now());
-            } else {
-                statusText.innerText = '❌ Gagal: ' + result.message;
+        // Event listener saat proses unggah berjalan
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                // Hitung persentase 0 - 100
+                const percentComplete = Math.round((event.loaded / event.total) * 100);
+                progressBar.style.width = percentComplete + '%';
+                progressText.innerText = percentComplete + '%';
+
+                // Hitung kecepatan (Update setiap 0.5 detik agar angka tidak terlalu berkedip)
+                const currentTime = Date.now();
+                const timeDiff = (currentTime - previousTime) / 1000; // dalam detik
+                
+                if (timeDiff >= 0.5) { 
+                    const bytesDiff = event.loaded - previousLoaded;
+                    const speedBps = bytesDiff / timeDiff; // Byte per detik
+                    const speedKbps = speedBps / 1024; // KB per detik
+                    
+                    if (speedKbps > 1024) {
+                        speedText.innerText = (speedKbps / 1024).toFixed(2) + ' MB/s';
+                    } else {
+                        speedText.innerText = speedKbps.toFixed(1) + ' KB/s';
+                    }
+                    
+                    previousTime = currentTime;
+                    previousLoaded = event.loaded;
+                }
+                
+                if (percentComplete === 100) {
+                    speedText.innerText = 'Memproses di Google Drive...';
+                }
             }
-        } catch (error) {
-            statusText.innerText = '❌ Error: Cek konsol.';
-            console.error(error);
-        } finally {
+        };
+
+        // Event listener saat respon dari Google Apps Script diterima
+        xhr.onload = function() {
+            if (xhr.status === 200 || xhr.status === 302) {
+                try {
+                    const result = JSON.parse(xhr.responseText);
+                    if (result.status === 'success') {
+                        statusText.innerText = '✅ Berhasil!';
+                        form.reset();
+                        set(dbRef, Date.now()); // Picu sinkronisasi realtime
+                    } else {
+                        statusText.innerText = '❌ Gagal: ' + result.message;
+                    }
+                } catch(err) {
+                    statusText.innerText = '✅ Terkirim (Response tidak terbaca)';
+                    form.reset();
+                    set(dbRef, Date.now());
+                }
+            } else {
+                statusText.innerText = '❌ Error server: ' + xhr.status;
+            }
+            
+            // Sembunyikan form dan aktifkan tombol kembali
             btn.disabled = false;
             setTimeout(() => {
+                progressContainer.style.display = 'none';
                 statusText.innerText = '';
             }, 3000);
-        }
+        };
+
+        // Event listener jika terjadi error jaringan (misal internet putus)
+        xhr.onerror = function() {
+            statusText.innerText = '❌ Error jaringan. Cek koneksi Anda.';
+            btn.disabled = false;
+        };
+
+        // Kirim data payload
+        xhr.send(payloadString);
     };
 });
